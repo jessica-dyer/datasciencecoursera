@@ -1,14 +1,6 @@
-x <-list(aardvark = 1:5)
-x$a
-x[["a", exact = FALSE]]
-
-x <- c(1, 2, NA, 4, NA, 5)
-bad <- is.na(x)
-x[!bad]
+##Quiz 1, October 13, 2020
 
 x <- c(4, "a", TRUE)
-x
-
 
 x <- c(1,3, 5) 
 y <- c(3, 2, 10)
