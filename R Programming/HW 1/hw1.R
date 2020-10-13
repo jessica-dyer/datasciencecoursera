@@ -76,3 +76,4 @@ mean(x$Temp, na.rm = TRUE)
 x<- subset(hw1_data, Month==5)
 max(x$Ozone, na.rm = TRUE)
 
+
