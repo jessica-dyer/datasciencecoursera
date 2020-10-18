@@ -21,10 +21,10 @@
 #   sum(my_vector, na.rm = FALSE) / length(my_vector)
 # }
 # my_mean (c(1,2,3))
-
+##"C:\\Users\\jessd9\\Desktop\\r_programming_data\\rprog_data_specdata.zip"
 ###################################
 zipF<-file.choose("rprog_data_specdata.zip")
-unzip(zipF, files = NULL, list = FALSE, overwrite = TRUE, junkpaths = FALSE, exdir = ".", unzip = "internal",
+unzip(zipF, files = NULL, list = FALSE, overwrite = TRUE, junkpaths = FALSE, exdir = "C:\\Users\\jessd9\\Desktop\\r_programming_data", unzip = "internal",
       setTimes = FALSE)
 
 ##Pollutant mean
