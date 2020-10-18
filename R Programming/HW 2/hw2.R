@@ -23,14 +23,34 @@
 # my_mean (c(1,2,3))
 ##"C:\\Users\\jessd9\\Desktop\\r_programming_data\\rprog_data_specdata.zip"
 ###################################
-zipF<-file.choose("rprog_data_specdata.zip")
-unzip(zipF, files = NULL, list = FALSE, overwrite = TRUE, junkpaths = FALSE, exdir = "C:\\Users\\jessd9\\Desktop\\r_programming_data", unzip = "internal",
-      setTimes = FALSE)
+# zipF<-file.choose("rprog_data_specdata.zip")
+# unzip(zipF, files = NULL, list = FALSE, overwrite = TRUE, junkpaths = FALSE, exdir = "C:\\Users\\jessd9\\Desktop\\r_programming_data", unzip = "internal",
+#       setTimes = FALSE)
+
+pathToData<-"C:\\Users\\jessd9\\Desktop\\r_programming_data"
+pathToCsvFiles<-paste(pathToData,"\\specdata", sep = "")
 
 ##Pollutant mean
 library(readr)
+
+loadValuesForSingle <- function(directory, pollutant, id) {
+  contentsOfCsv <- read_csv(paste(pathToCsvFiles, "\\", idToString(id), ".csv", sep = ""))
+  contentsOfCsv[[pollutant]]
+}
+
+idToString <- function(id) {
+  myString <- toString(id)
+  if (id < 10) {myString<-paste("00", myString, sep = "")}  
+  else if (id <100) {myString<-paste("0", myString, sep = "")}
+  myString 
+}
+
+
 pollutantmean <- function(directory, pollutant, id = 1:332){
-  
-  X001 <- read_csv("specdata/001.csv")
+  giantVector<-vector()
+  for(i in id) {
+    giantVector<-c(giantVector, loadValuesForSingle(directory, pollutant, i))
+  }
+  mean(giantVector, na.rm = TRUE)
 }
 
