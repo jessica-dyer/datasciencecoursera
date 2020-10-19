@@ -33,39 +33,39 @@ pathToCsvFiles<-paste(pathToData,"\\specdata", sep = "")
 ##Pollutant mean
 library(readr)
 
-loadCsv <- function(id) {
-  contentsOfCsv <- read_csv(paste(pathToCsvFiles, "\\", idToString(id), ".csv", sep = ""))
+loadCsv <- function(idNumeric) {
+  contentsOfCsv <- read_csv(paste(pathToCsvFiles, "\\", idToString(idNumeric), ".csv", sep = ""))
 }
 
-loadValuesForSinglePol <- function(directory, pollutant, id) {
-  contentsOfCsv <- loadCsv (id)
+loadValuesForSinglePol <- function(directory, pollutant, idNumeric) {
+  contentsOfCsv <- loadCsv (idNumeric)
   contentsOfCsv[[pollutant]]
 }
 
-idToString <- function(id) {
-  myString <- toString(id)
-  if (id < 10) {myString<-paste("00", myString, sep = "")}  
-  else if (id <100) {myString<-paste("0", myString, sep = "")}
-  myString 
+idToString <- function(idnumeric) {
+  idString <- toString(idnumeric)
+  if (idNumeric < 10) {idString<-paste("00", idString, sep = "")}  
+  else if (idNumeric <100) {idString<-paste("0", idString, sep = "")}
+  idString 
 }
 
 
-pollutantmean <- function(directory, pollutant, id = 1:332){
+pollutantmean <- function(directory, pollutant, idList = 1:332){
   giantVector<-vector()
-  for(i in id) {
+  for(i in idList) {
     giantVector<-c(giantVector, loadValuesForSinglePol(directory, pollutant, i))
   }
   mean(giantVector, na.rm = TRUE)
 }
 
-countOfComplete <- function(id) {
-  myBoos<-complete.cases(loadCsv(id))
+countOfComplete <- function(idNumeric) {
+  myBoos<-complete.cases(loadCsv(idNumeric))
   sum(myBoos)
 }
 
-complete <- function(directory, idlist = 1:332) {
+complete <- function(directory, idList = 1:332) {
   df<- data.frame(id=integer(), nobs=integer())
-  for(i in idlist) {
+  for(i in idList) {
     row <- data.frame(i, countOfComplete(i))
                      names(row)<-c("id", "nobs")
                      df<-rbind(df,row)
