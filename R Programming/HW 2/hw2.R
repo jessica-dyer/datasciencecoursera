@@ -58,11 +58,16 @@ pollutantmean <- function(directory, pollutant, idList = 1:332){
   mean(giantVector, na.rm = TRUE)
 }
 
+##Input: single numeric ID 
+##returning an integer >=0 representing the number of complete cases 
 countOfComplete <- function(idNumeric) {
   myBoos<-complete.cases(loadCsv(idNumeric))
   sum(myBoos)
 }
 
+##Inputs: directory, (not used for now)
+##single ID: numeric ID list 
+##returning a data frame with a row for each file, columns: id, number of complete observations 
 complete <- function(directory, idList = 1:332) {
   df<- data.frame(id=integer(), nobs=integer())
   for(i in idList) {
@@ -72,3 +77,28 @@ complete <- function(directory, idList = 1:332) {
   }
   df
 }
+
+##Inputs: directory, (not used for now)
+##single ID: numeric ID of a single file 
+meetsThresholdForSingle <- (directory, idList = 1:332) {
+  
+  
+}
+
+corrDf <- function(directory, idList = 1:332) {
+  df<- data.frame(loadCsv(idNumeric = ))
+  for (i in idList) {
+    row <-data.frame(i, (i))
+      names(row)<-c("id", "nitrate", "sulfate")
+        df<-rbind(df, row)
+  }
+  df
+}
+
+# corr <- function(directory, threshold = 0) {
+#   cor(x, y = NULL, use = "everything",
+#       method = c("pearson", "kendall", "spearman"))  
+#   
+# }
+
+
