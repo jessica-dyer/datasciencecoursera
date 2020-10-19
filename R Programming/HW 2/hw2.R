@@ -28,7 +28,7 @@
 #       setTimes = FALSE)
 
 pathToData<-"C:\\Users\\jessd9\\Desktop\\r_programming_data"
-pathToCsvFiles<-paste(pathToData,"\\specdata", sep = "")
+pathToCsvFiles<-paste(pathToData,"\\specdata\\", sep = "")
 
 ##Pollutant mean
 library(readr)
@@ -94,44 +94,29 @@ meetsThresholdForSingle <- function(directory, idNumeric, threshold=0) {
   answer 
 }
 
-##Inputs: directory, (not used for now)
-##single ID: numeric ID of a single file 
-##Threshold: integer
-##return all complete pairs of values for the monitoring station if it meets the threshold criteria 
-meetsThresholdSingleDf <- function(idNumeric, threshold=0) {
-  df<- data.frame(id=integer(), sulfate=integer(), nitrate=integer())
-    if(meetsThresholdForSingle("", idNumeric)==TRUE) {
-      row <- data.frame(loadCsv(idNumeric))
-      names(row)<-c("id", "sulfate", "nitrate")
-      df<-rbind(df,row)
-    }
-  df
+corr <- function(directory, threshold = 0) {
+  # Get full path of the specsdata folder
+  directory <- pathToCsvFiles    
+  
+  #Get observations and filter by threshold
+  observations <- complete(directory)
+  filtered_observations = subset(observations,observations$nobs > threshold)
+  
+  # Aux variables
+  file_list <- list.files(directory)
+  correlation <- vector()
+  
+  # For each id in filtered observations:
+  for (i in filtered_observations$id) {
+    # Read the file,
+    file_dir <- paste(directory,file_list[i],sep="")
+    file_data <- read.csv(file_dir)
+    # remove NA,
+    file_data <- subset(file_data,complete.cases(file_data))        
+    # and calculate the cor and accumulate it in the corellation vector.
+    correlation <- c(correlation,cor(file_data$nitrate,file_data$sulfate))    
+  }
+  #Finally, return the vector
+  correlation
 }
-
- 
-#   
-# ##Inputs: threshold 
-# ##returns a dataframe with a row for each record for all monitors that have complete cases greater than threshold, 
-# ##columns: id, sulfate, nitrate for monitor locations where the number of completely observed cases is greater than the threshold. 
-# corrDf <- function(threshold=0, idList = 1:332) {
-#   df<- data.frame(id=integer(), sulfate=integer(), nitrate=integer())
-#   for (i in idList) {
-#     if (meetsThresholdForSingle(i)==TRUE) {
-#       ##Need a function that gets a data.frame of the complete cases of a single file
-#     }
-#   } 
-#     # row <-data.frame(i, (i))
-#     #   names(row)<-c("id", "nitrate", "sulfate")
-#     #     df<-rbind(df, row)
-#   df
-
-
-
-
-# corr <- function(directory, threshold = 0) {
-#   cor(x, y = NULL, use = "everything",
-#       method = c("pearson", "kendall", "spearman"))  
-#   
-# }
-
 
