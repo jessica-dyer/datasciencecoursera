@@ -32,6 +32,7 @@ pathToCsvFiles<-paste(pathToData,"\\specdata", sep = "")
 
 ##Pollutant mean
 library(readr)
+library(dplyr)
 
 loadCsv <- function(idNumeric) {
   contentsOfCsv <- read_csv(paste(pathToCsvFiles, "\\", idToString(idNumeric), ".csv", sep = ""))
@@ -72,8 +73,8 @@ complete <- function(directory, idList = 1:332) {
   df<- data.frame(id=integer(), nobs=integer())
   for(i in idList) {
     row <- data.frame(i, countOfComplete(i))
-                     names(row)<-c("id", "nobs")
-                     df<-rbind(df,row)
+    names(row)<-c("id", "nobs")
+    df<-rbind(df,row)
   }
   df
 }
@@ -93,15 +94,35 @@ meetsThresholdForSingle <- function(directory, idNumeric, threshold=0) {
   answer 
 }
 
-corrDf <- function(directory, idList = 1:332) {
-  df<- data.frame(loadCsv(idNumeric = ))
-  for (i in idList) {
-    row <-data.frame(i, (i))
-      names(row)<-c("id", "nitrate", "sulfate")
-        df<-rbind(df, row)
-  }
-  df
+##Inputs: directory, (not used for now)
+##single ID: numeric ID of a single file 
+##Threshold: integer
+##return all complete pairs of values for the monitoring station if it meets the threshold criteria 
+meetsThresholdSingleDf <- function(idNumeric, threshold=0) {
+  df<- data.frame(id=integer(), sulfate=integer(), nitrate=integer())
+    if(meetsThresholdForSingle(idNumeric)==TRUE) {
+      row <- data.frame(loadCsv(idNumeric))
+    }
 }
+ 
+#   
+# ##Inputs: threshold 
+# ##returns a dataframe with a row for each record for all monitors that have complete cases greater than threshold, 
+# ##columns: id, sulfate, nitrate for monitor locations where the number of completely observed cases is greater than the threshold. 
+# corrDf <- function(threshold=0, idList = 1:332) {
+#   df<- data.frame(id=integer(), sulfate=integer(), nitrate=integer())
+#   for (i in idList) {
+#     if (meetsThresholdForSingle(i)==TRUE) {
+#       ##Need a function that gets a data.frame of the complete cases of a single file
+#     }
+#   } 
+#     # row <-data.frame(i, (i))
+#     #   names(row)<-c("id", "nitrate", "sulfate")
+#     #     df<-rbind(df, row)
+#   df
+}
+
+
 
 # corr <- function(directory, threshold = 0) {
 #   cor(x, y = NULL, use = "everything",
