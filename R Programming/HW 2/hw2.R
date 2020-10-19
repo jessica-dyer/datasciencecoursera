@@ -80,9 +80,17 @@ complete <- function(directory, idList = 1:332) {
 
 ##Inputs: directory, (not used for now)
 ##single ID: numeric ID of a single file 
-meetsThresholdForSingle <- (directory, idList = 1:332) {
-  
-  
+##Threshold: integer
+##return a boolean for a single CSV based on threshold entered 
+
+meetsThresholdForSingle <- function(directory, idNumeric, threshold=0) {
+  answer <- FALSE
+    if (countOfComplete(idNumeric) > threshold) {
+      answer <-TRUE
+    } else {
+      answer <-FALSE
+    }
+  answer 
 }
 
 corrDf <- function(directory, idList = 1:332) {
