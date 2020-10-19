@@ -42,8 +42,8 @@ loadValuesForSinglePol <- function(directory, pollutant, idNumeric) {
   contentsOfCsv[[pollutant]]
 }
 
-idToString <- function(idnumeric) {
-  idString <- toString(idnumeric)
+idToString <- function(idNumeric) {
+  idString <- toString(idNumeric)
   if (idNumeric < 10) {idString<-paste("00", idString, sep = "")}  
   else if (idNumeric <100) {idString<-paste("0", idString, sep = "")}
   idString 
