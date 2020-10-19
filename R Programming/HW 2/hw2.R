@@ -100,10 +100,14 @@ meetsThresholdForSingle <- function(directory, idNumeric, threshold=0) {
 ##return all complete pairs of values for the monitoring station if it meets the threshold criteria 
 meetsThresholdSingleDf <- function(idNumeric, threshold=0) {
   df<- data.frame(id=integer(), sulfate=integer(), nitrate=integer())
-    if(meetsThresholdForSingle(idNumeric)==TRUE) {
+    if(meetsThresholdForSingle("", idNumeric)==TRUE) {
       row <- data.frame(loadCsv(idNumeric))
+      names(row)<-c("id", "sulfate", "nitrate")
+      df<-rbind(df,row)
     }
+  df
 }
+
  
 #   
 # ##Inputs: threshold 
@@ -120,7 +124,7 @@ meetsThresholdSingleDf <- function(idNumeric, threshold=0) {
 #     #   names(row)<-c("id", "nitrate", "sulfate")
 #     #     df<-rbind(df, row)
 #   df
-}
+
 
 
 

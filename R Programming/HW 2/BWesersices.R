@@ -5,23 +5,26 @@
 #  e.g. calling  printRowOfAstrisks(4)  will do the same thing as writing the line of code print("****")
 # Returns:
 #   nothing
-printRowOfAstrisks <- function(n) {
-  # Hints on writing code in here
-  # First, define a variable named something like myString that starts with an empty string
-  # Second, use a for loop that will repeat n times
-  # Inside the for loop, assign a new value to myString, where the new value uses the paste() function to 
-  # combine the old-value of myString with one astrisk, "*"
-  # After the for loop, call the print() function
-  # Finally, unlike most functions we write that returns a value, I don't want this to return a value.  
-  ##So for the last line of your function, just put the word NULL
+printRowOfCharacter <- function(n, character) {
   mystring <- ""
   for(i in 1:n) {
-    mystring <- paste(mystring, "*", sep = "")
+    mystring <- paste(mystring, character, sep = "")
   }
   print(mystring)
   NULL
 }
 
+printRowOfAstrisks <- function(n) {
+  printRowOfCharacter(n, "*")
+}
+
+printRowOfDash <- function(n) {
+  printRowOfCharacter(n, "-")
+}
+
+isEven <- function(myInteger) {
+  myInteger%%2==0  
+}
 
 # Input:
 #   width: an integer >= 1
@@ -44,7 +47,7 @@ printRectangle <- function(width, height)  {
   # Finally, return nothing, so the last line should be just the word NULL
 }
 
-# printRectangle(100,100)
+ printRectangle(10,10)
 
 printTriange <-function(height) {
   for(i in 1:height) {
@@ -53,4 +56,14 @@ printTriange <-function(height) {
   NULL
 }
 
-printTriange(98)
+printAlternatingTri <- function(height) {
+  for(i in 1:height) {
+    if (isEven(i)==TRUE) {
+      printRowOfAstrisks(i)
+    } else { 
+      printRowOfDash(i)
+    }
+  }
+}
+
+printAlternatingTri(10)
