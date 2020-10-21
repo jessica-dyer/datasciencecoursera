@@ -48,18 +48,27 @@ printRectangle <- function(width, height)  {
 }
 
 makeRectangleObject <- function(width, height) {
+  cachedArea <- NULL
+  
   getWidth <- function() { width }
-  setWidth <- function(newWidth) { width <<- newWidth }
+  setWidth <- function(newWidth) { 
+    width <<- newWidth 
+    cachedArea <<- NULL
+  }
   getHeight <- function() { height }
-  setHeight <- function() { height <<- height }
+  setHeight <- function(newHeight) {
+    height <<- newHeight
+    cachedArea <<- NULL
+  }
   
   printYourself <- function() {
     printRectangle(width, height)
   }
   
-  cachedArea <- NULL
+  
   getArea <- function() {
-    if (cachedArea == NULL) {
+    if (is.null(cachedArea)) {
+      print("Doing that super-time-consuming math computation...")
       cachedArea <<- width * height
     }
     cachedArea
