@@ -47,7 +47,33 @@ printRectangle <- function(width, height)  {
   # Finally, return nothing, so the last line should be just the word NULL
 }
 
- printRectangle(10,10)
+makeRectangleObject <- function(width, height) {
+  getWidth <- function() { width }
+  setWidth <- function(newWidth) { width <<- newWidth }
+  getHeight <- function() { height }
+  setHeight <- function() { height <<- height }
+  
+  printYourself <- function() {
+    printRectangle(width, height)
+  }
+  
+  cachedArea <- NULL
+  getArea <- function() {
+    if (cachedArea == NULL) {
+      cachedArea <<- width * height
+    }
+    cachedArea
+  }
+  
+  list(getWidth = getWidth,
+       setWidth = setWidth,
+       getHeight = getHeight,
+       setHeight = setHeight,
+       printYourself = printYourself,
+       getArea = getArea)
+}
+
+#printRectangle(10,10)
 
 printTriange <-function(height) {
   for(i in 1:height) {
@@ -66,4 +92,4 @@ printAlternatingTri <- function(height) {
   }
 }
 
-printAlternatingTri(10)
+#printAlternatingTri(10)
