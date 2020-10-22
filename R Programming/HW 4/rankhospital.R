@@ -23,6 +23,7 @@ rankhospital <- function(state, outcome, num = "best") {
   
   #Sort data by the outcome provided 
   sortedData <- sortBy(dataForOneState, outcome)
+  sortedData <- subset(sortedData, !is.na(usingColumnFor(sortedData, outcome)))
   
   desiredRank<- NULL
   if (typeof(num)=="character") {
