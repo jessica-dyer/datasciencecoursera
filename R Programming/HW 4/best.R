@@ -69,6 +69,7 @@ sortBy <- function(df, outcome) {
   sortedData <- df[order(usingColumnFor(df, outcome), df$Hospital.Name), ]
 }
 
+
 ## Receive a warning about NAs being introduced
 hist(outcomeData[, 11])
 

@@ -48,7 +48,7 @@ best <- function(state, outcome){
   rankhospital(state, outcome, 1)
 }
 
-# Identifies all unique outcome values into a vector
+##Identifies all unique outcome values into a vector
 ##uniqueData <- unique(usingColumnFor(sortedData, outcome))
 ##valueAtRank <- uniqueData[num]
 ##groupAtRank <- subset(sortedData, usingColumnFor(sortedData, outcome)==valueAtRank)
