@@ -33,9 +33,9 @@ isValidState<-function(state) {
 }
 
 outcomeType<-list(
-  HeartAttack = "Heart Attack",
-  HeartFailure = "Heart Failure",
-  Pneumonia = "Pneumonia")
+  HeartAttack = "heart attack",
+  HeartFailure = "heart failure",
+  Pneumonia = "pneumonia")
 
 #outcomeTypeNew<- (c("heart attack", "heart failure", "pneumonia"))
 
@@ -46,6 +46,21 @@ isValidOutcome<-function(outcome) {
   validOutcomes <- sapply(validOutcomes, tolower)
   outcome <- tolower(outcome)
   outcome %in% validOutcomes
+}
+
+##
+sortBy <- function(df, outcome) {
+  outcome <- tolower(outcome)
+  sortedData <- NULL
+  if (outcome==outcomeType$HeartAttack) {
+    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), ]
+  } else if (outcome==outcomeType$HeartFailure) {
+    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), ]
+  } else if (outcome==outcomeType$Pneumonia) {
+    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), ]
+  } else {
+    stop (paste("Function sortBy encountered an error, invalid outcome:", outcome))
+  }
 }
 
 ## Receive a warning about NAs being introduced
@@ -71,7 +86,7 @@ best <- function(state, outcome){
   dataForOneState<- subset(bestData, bestData$State==state)
   
   ##Return hospital name in that state with lowest 30-day death rate
-  sortedData <- dataForOneState[order(dataForOneState$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), ]
+  sortedData <- sortBy(dataForOneState, outcome)
   
   head(sortedData, n=1)$Hospital.Name
 }
