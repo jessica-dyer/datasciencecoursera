@@ -3,8 +3,6 @@ setwd ("C:/Users/jessd9/Repositories/datasciencecoursera/R Programming/HW 4")
 
 source ("best.R")
 
-
-
 rankhospital <- function(state, outcome, num = "best") {
 
   ## Add an error if the state name entered is invalid
@@ -23,18 +21,11 @@ rankhospital <- function(state, outcome, num = "best") {
   #Subsets the data to the state of interest
   dataForOneState<- subset(bestData, bestData$State==state)
   
-  # Sort data by the outcome provided 
+  #Sort data by the outcome provided 
   sortedData <- sortBy(dataForOneState, outcome)
   
-  # Identifies all unique outcome values into a vector
-  uniqueData <- unique(usingColumnFor(sortedData, outcome))
-  
-  valueAtRank <- uniqueData[num]
-  
-  groupAtRank <- subset(sortedData, usingColumnFor(sortedData, outcome)==valueAtRank)
-  
   ##Return hospital name in that state with the given rank
-  groupAtRank[1, ]$Hospital.Name 
+  sortedData[num,] $Hospital.Name
 
 }
 ##answer<-rankhospital("WA", outcomeType$HeartFailure, 5)
@@ -42,3 +33,8 @@ rankhospital <- function(state, outcome, num = "best") {
 best <- function(state, outcome){
   rankhospital(state, outcome, 1)
 }
+
+# Identifies all unique outcome values into a vector
+##uniqueData <- unique(usingColumnFor(sortedData, outcome))
+##valueAtRank <- uniqueData[num]
+##groupAtRank <- subset(sortedData, usingColumnFor(sortedData, outcome)==valueAtRank)
