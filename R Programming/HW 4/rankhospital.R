@@ -24,8 +24,21 @@ rankhospital <- function(state, outcome, num = "best") {
   #Sort data by the outcome provided 
   sortedData <- sortBy(dataForOneState, outcome)
   
+  desiredRank<- NULL
+  if (typeof(num)=="character") {
+    if (num=="best") {
+      desiredRank<-1
+    } else if (num=="worst") {
+      desiredRank<-nrow(sortedData)
+    } else {
+      stop("invalid rank")
+    }
+  } else {
+    desiredRank<-num
+  }
+  
   ##Return hospital name in that state with the given rank
-  sortedData[num,] $Hospital.Name
+  sortedData[desiredRank,] $Hospital.Name
 
 }
 ##answer<-rankhospital("WA", outcomeType$HeartFailure, 5)
