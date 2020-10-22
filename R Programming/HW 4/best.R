@@ -4,26 +4,26 @@
 pathToData<-"C:\\Users\\jessd9\\Desktop\\r_programming_data\\rprog_data_ProgAssignment3-data.zip"
 pathToCsvFiles<-paste(pathToData,"\\rprog_data_ProgAssignment3-data\\", sep = "")
 setwd("C:/Users/jessd9/Desktop/r_programming_data/rprog_data_ProgAssignment3-data")
-outcome <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
+outcomeData <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
 
 ##Set working directory
 setwd("C:/Users/jessd9/Repositories/datasciencecoursera/R Programming/HW 4")
 
 ##Number of columns (46)
-ncol(outcome)
+ncol(outcomeData)
 ##Number of rows (4706)
-nrow(outcome) 
+nrow(outcomeData) 
 
-variableNames<-names(outcome)
+variableNames<-names(outcomeData)
 
 ##figure out how to coerce each column into as.numeric
 ##1. Plot the 30-day mortality rates for heart attack
 
-outcome[, 11] <- as.numeric(outcome[, 11])
-outcome[, 17] <- as.numeric(outcome[, 17])
-outcome[, 23] <- as.numeric(outcome[, 23])
+outcomeData[, 11] <- as.numeric(outcomeData[, 11])
+outcomeData[, 17] <- as.numeric(outcomeData[, 17])
+outcomeData[, 23] <- as.numeric(outcomeData[, 23])
 
-stateNames<-unique(outcome$State)
+stateNames<-unique(outcomeData$State)
 
 ##Input: state abbreviation (string), i.e. "WA"
 ##Output: Boolean 
@@ -49,7 +49,7 @@ isValidOutcome<-function(outcome) {
 }
 
 ## Receive a warning about NAs being introduced
-hist(outcome[, 11])
+hist(outcomeData[, 11])
 
 ##2. Finding the best hospital in a state
 best <- function(state, outcome){
@@ -65,6 +65,13 @@ best <- function(state, outcome){
   }
   
   ##Subsets the data to look at columns 7 & 11 
-  bestData<- subset(outcome, select = c(2, 7, 11, 17, 23)) 
-  ## Return hospital name in that state with lowest 30-day death rate
+  bestData<- subset(outcomeData, select = c(2, 7, 11, 17, 23))
+  
+  ##Subsets the data to the state of interest
+  dataForOneState<- subset(bestData, bestData$State==state)
+  
+  ##Return hospital name in that state with lowest 30-day death rate
+  sortedData <- dataForOneState[order(dataForOneState$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), ]
+  
+  head(sortedData, n=1)$Hospital.Name
 }
