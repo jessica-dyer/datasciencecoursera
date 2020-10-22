@@ -49,18 +49,24 @@ isValidOutcome<-function(outcome) {
 }
 
 ##
-sortBy <- function(df, outcome) {
+usingColumnFor <- function(df, outcome) {
   outcome <- tolower(outcome)
-  sortedData <- NULL
+  column <- NULL
   if (outcome==outcomeType$HeartAttack) {
-    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), ]
+    column <- df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack
   } else if (outcome==outcomeType$HeartFailure) {
-    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), ]
+    column <- df$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure
   } else if (outcome==outcomeType$Pneumonia) {
-    sortedData <- df[order(df$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), ]
+    column <- df$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia
   } else {
     stop (paste("Function sortBy encountered an error, invalid outcome:", outcome))
   }
+}
+
+##
+sortBy <- function(df, outcome) {
+  outcome <- tolower(outcome)
+  sortedData <- df[order(usingColumnFor(df, outcome), df$Hospital.Name), ]
 }
 
 ## Receive a warning about NAs being introduced
