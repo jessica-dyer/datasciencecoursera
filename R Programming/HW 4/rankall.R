@@ -6,9 +6,19 @@ source ("rankhospital.R")
 sortByMultiple <- function(df, outcome) {
   outcome <- tolower(outcome)
   multSortedData <- df[order(df$State, usingColumnFor(df, outcome), df$Hospital.Name), ]
-  }
+}
+
+##find index of the first instance of each state in the large dataframe
+##input: state (two letter state abbreviation-string), dataframe
+##output: single numeric index
+
+findIndexOfMatch <- function(outcomeData, state) {
+ indexData <- which(outcomeData==state)[1]
+}
+  
 
 rankall <- function(outcome, num = "best") {
+  
   ## Add an error if the outcome entered is invalid
   if (!isValidOutcome(outcome)){
     stop("invalid outcome")
@@ -16,6 +26,9 @@ rankall <- function(outcome, num = "best") {
   
   ## Sort all data by selected outcome 
   sortedData <- sortByMultiple(outcomeData, outcome)
+  
+  ## Pull out unique states at specific ranking
+  rankedDataDf <- 
   
   desiredRank<- NULL
   if (typeof(num)=="character") {
@@ -30,6 +43,6 @@ rankall <- function(outcome, num = "best") {
     desiredRank<-num
   }
   
-  myNewDf<- sortedData[desiredRank,] $Hospital.Name $State 
+  
 }
 
