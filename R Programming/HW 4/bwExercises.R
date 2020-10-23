@@ -1,3 +1,5 @@
+setwd("C:/Users/jessd9/Repositories/datasciencecoursera/R Programming/HW 4")
+
 ##Write a function that takes two numbers (start num & end num) and 
 ##returns a vector of all numbers that are divisible by 5 between them 
 
@@ -35,6 +37,8 @@ reverse <- function(vector) {
   myInverseVector
 }
 
+
+
 ##Zipper: a function that takes 2 vectors of the same length and returns the two vectors combined like the teeth on a zipper 
 zipper <- function(v1, v2) {
   ##Input check of lengths of v1 & v2
@@ -51,3 +55,35 @@ zipper <- function(v1, v2) {
   zipperVector
 }
 
+##Fib function: returns the nth number in the fibonacci sequence (i.e. fib(8)=21)
+##input: single positive integer (n)
+##output: the fibonacci number at the nth position 
+
+fib <- function(n) {
+  ##Input check of 'n' 
+  if (n<0) {
+    stop("All values should be greater than 0.")
+  }
+  if (n==0) {
+    return(0)
+  }
+  if (n==1) {
+    return(1)
+  }
+  returnValue<-fib(n-1) + fib(n-2)
+  returnValue 
+}
+fib(8)
+
+power <- function(base, exp) {
+  ##Input check of 'n' 
+  if (exp<0)  {
+    stop("All exponents should be greater than 0.")
+  }
+  if (exp==1) {
+    return(base)
+  }
+  returnValue<-power(base, exp-1) * (base)
+  returnValue
+}
+power(2,5)
