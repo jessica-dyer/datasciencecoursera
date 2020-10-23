@@ -42,22 +42,6 @@ rankall <- function(outcome, num = "best") {
   ## Sort all data by selected outcome 
   sortedData <- sortByMultiple(outcomeData, outcome)
   
-  ## Pull out unique states at specific ranking
-  rankedDataDf <- data.frame(state=character(), hospital_name=character())
-  for (s in stateNames) {
-    row <- NULL
-    index <- findIndexOfMatch(sortedData, s, num)
-   if (is.null(index)) {
-     row <- data.frame(s, NA)
-   } else {
-     tempState <- sortedData$State[index]
-     tempName <- sortedData$Hospital.Name[index]
-     row<-data.frame(tempState, tempName) 
-   }
-   names(row)<-c("State", "Hospital Name")
-   rankedDataDf<-rbind(rankedDataDf,row)
-  }
-  
   desiredRank<- NULL
   if (typeof(num)=="character") {
     if (num=="best") {
@@ -70,7 +54,28 @@ rankall <- function(outcome, num = "best") {
   } else {
     desiredRank<-num
   }
+  
+  ## Pull out unique states at specific ranking
+  rankedDataDf <- data.frame(state=character(), hospital_name=character())
+  for (s in stateNames) {
+    row <- NULL
+    index <- findIndexOfMatch(sortedData, s, desiredRank)
+   if (is.null(index)) {
+     row <- data.frame(s, NA)
+   } else {
+     tempState <- sortedData$State[index]
+     tempName <- sortedData$Hospital.Name[index]
+     row<-data.frame(tempState, tempName) 
+   }
+   names(row)<-c("State", "Hospital Name")
+   rankedDataDf<-rbind(rankedDataDf,row)
+  }
+  
+
   rankedDataDf
 }
 
-test<-head(rankall("heart attack", 20), 10)
+##test<-head(rankall("heart attack", 20), 10)
+test<-tail(rankall("pneumonia", "worst"), 3)
+
+##split(outcomeData, outcomeData$state)
