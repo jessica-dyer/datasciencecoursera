@@ -6,20 +6,25 @@ source ("rankhospital.R")
 sortByMultiple <- function(df, outcome) {
   outcome <- tolower(outcome)
   multSortedData <- df[order(df$State, usingColumnFor(df, outcome), df$Hospital.Name), ]
+  return(multSortedData)
 }
 
 ##find index of the first instance of each state in the large dataframe
-##input: state (two letter state abbreviation-string), dataframe
-##output: single numeric index
-findIndexOfMatch <- function(outcomeData, state) {
- indexData <- which(outcomeData==state)[1]
-}
+##input: state (two letter state abbreviation-string)
+##input: dataframe (contents of dataframe have be valid (not empty), has to be sorted)
+##input: rank number (must be numeric)
+##output: single numeric index or "NULL" if there are not "num" hospitals in that state
 
-findIndexOfMatch <- function(outcomeData, state) {
+findIndexOfMatch <- function(outcomeData, state, num) {
   indexOfMatch <- NULL
   for (index in 1:nrow(outcomeData)) {
     if (outcomeData$State[index] == state) {
-      indexOfMatch<-index
+      maybeIndexOfMatch<-index + num-1 
+      if (outcomeData$State[maybeIndexOfMatch] != state) {
+        return(NULL)
+      } else {
+        indexOfMatch<-maybeIndexOfMatch
+      }
       break
     }
   }
@@ -39,9 +44,14 @@ rankall <- function(outcome, num = "best") {
   
   ## Pull out unique states at specific ranking
   rankedDataDf <- data.frame()
+  row <- NULL
   for (s in stateNames) {
-   index <- findIndexOfMatch(outcomeData, s)
-   row<-outcomeData[index,]
+   index <- findIndexOfMatch(sortedData, s, num)
+   if (is.null(index)) {
+     row <- data.frame(NA, s)
+   } else {
+     row<-sortedData[index,] 
+   }
    rankedDataDf<-rbind(rankedDataDf,row)
   }
   
@@ -57,7 +67,8 @@ rankall <- function(outcome, num = "best") {
   } else {
     desiredRank<-num
   }
-  rankedDataDf
-  
+  finalData <- data.frame(rankedDataDf$State, rankedDataDf$Hospital.Name)
+  finalData
 }
 
+test<-head(rankall("heart attack", 20), 10)

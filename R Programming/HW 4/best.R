@@ -24,6 +24,7 @@ outcomeData[, 17] <- as.numeric(outcomeData[, 17])
 outcomeData[, 23] <- as.numeric(outcomeData[, 23])
 
 stateNames<-unique(outcomeData$State)
+stateNames<-sort(stateNames)
 
 ##Input: state abbreviation (string), i.e. "WA"
 ##Output: Boolean 
