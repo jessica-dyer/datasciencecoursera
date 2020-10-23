@@ -43,15 +43,18 @@ rankall <- function(outcome, num = "best") {
   sortedData <- sortByMultiple(outcomeData, outcome)
   
   ## Pull out unique states at specific ranking
-  rankedDataDf <- data.frame()
-  row <- NULL
+  rankedDataDf <- data.frame(state=character(), hospital_name=character())
   for (s in stateNames) {
-   index <- findIndexOfMatch(sortedData, s, num)
+    row <- NULL
+    index <- findIndexOfMatch(sortedData, s, num)
    if (is.null(index)) {
-     row <- data.frame(NA, s)
+     row <- data.frame(s, NA)
    } else {
-     row<-sortedData[index,] 
+     tempState <- sortedData$State[index]
+     tempName <- sortedData$Hospital.Name[index]
+     row<-data.frame(tempState, tempName) 
    }
+   names(row)<-c("State", "Hospital Name")
    rankedDataDf<-rbind(rankedDataDf,row)
   }
   
@@ -67,8 +70,7 @@ rankall <- function(outcome, num = "best") {
   } else {
     desiredRank<-num
   }
-  finalData <- data.frame(rankedDataDf$State, rankedDataDf$Hospital.Name)
-  finalData
+  rankedDataDf
 }
 
 test<-head(rankall("heart attack", 20), 10)
