@@ -78,4 +78,4 @@ rankall <- function(outcome, num = "best") {
 ##test<-head(rankall("heart attack", 20), 10)
 test<-tail(rankall("pneumonia", "worst"), 3)
 
-##split(outcomeData, outcomeData$state)
+split2<- split(outcomeData, outcomeData$State)
