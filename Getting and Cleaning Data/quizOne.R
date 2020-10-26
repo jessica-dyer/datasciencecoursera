@@ -18,7 +18,7 @@ download.file(fileUrl2, destfile = "naturalGas.xlsx")
 library(readxl)
 dat <- read.xlsx("naturalGas.xlsx", rows=18:23, cols=7:15)
 
-fileUrl3 <- "https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml"
+fileUrl3 <- "https://data.baltimorecity.gov/Culture-Arts/Restaurants/k5ry-ef3g/data"
 
 doc <- xmlTreeParse("baltRest.xml", useInternal=TRUE)
 rootNode <- xmlRoot(doc)
