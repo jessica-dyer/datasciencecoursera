@@ -1,4 +1,5 @@
 ##Week three of "getting and cleaning data"
+library(dplyr)
 
 ##Subsetting and sorting: 
 set.seed(13435)
@@ -136,5 +137,46 @@ mtcars$carname <- rownames(mtcars)
 carMelt <- melt(mtcars,id=c("carname", "gear", "cyl"), measure.vars=c("mpg", "hp"))
 
 ##dplyr 
+chicago <- readRDS("chicago.rds")
 
+##Select function: head(select(chicago, city:dptp)) where you can select specific columns to view. can use the minus sign to say I want to
+##look at all the columns except for
+##This is kind of like "browse"
 
+head(select(outcomeData, Provider.Number:State))
+head(select(outcomeData, -(Provider.Number:State)))
+
+##filter, can filter on multiple statements
+outcome.f <- filter(outcomeData, State=="WA" & outcomeData$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack<14 )
+
+##Arrange: can sort items by things in the columns (can also do in descending order)
+outcome.f <- arrange(outcome.f, ZIP.Code)
+outcome.f <- arrange(outcome.f, desc(ZIP.Code))
+
+##rename function 
+outcome.f <- rename(outcome.f, Heart_Attack=Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack)
+
+##Mutate (creating new variables)
+outcome.f <- mutate(outcome.f, newHeartAttack=Heart_Attack)
+##(outcome.f, heartAttackTimesTwo = Heart_Attack-2(Heart_Attack, na.rm = TRUE))
+
+outcome.f <- mutate(outcome.f, newHeartAttackCat=factor(1*(newHeartAttack<13.5), labels = c("Above 13.5", "Below 13.5"))
+)
+lowhigh <- group_by(outcome.f,newHeartAttackCat )
+
+myTable<-summarize(lowhigh, HeartAttackMean =mean(Heart_Attack, na.rm=TRUE))
+prop.table(myTable$HeartAttackMean)
+
+##Extract the year from the date 
+outcome.f <- mutate(outcome.f, year = POSIXlt(date)$year + 1900)
+
+##pipeline of operations using '%>%' which means take this data set, feed it though a bunch of operators!!! 
+
+##merging data!!! Data from a peer review experiment data 
+##important parameters: x,y,by,by.x,by.y,all
+mergedData = merge (reviews,solutsion,by.x="solution_id", by.y="id", all=TRUE)
+
+##Can also use "join"; 
+##remove== rm("")
+##tbl_df !!neat and tidy!!
+##select(), filter(), arrange(), mutate(), and summarize().

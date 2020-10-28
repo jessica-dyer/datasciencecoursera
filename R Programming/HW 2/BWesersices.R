@@ -82,7 +82,11 @@ makeRectangleObject <- function(width, height) {
        getArea = getArea)
 }
 
-#printRectangle(10,10)
+# myRectangle<-makeRectangleObject(4,7)
+# myRectangle$printYourself()
+
+
+##printRectangle(10,10)
 
 printTriange <-function(height) {
   for(i in 1:height) {
