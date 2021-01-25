@@ -1,0 +1,108 @@
+---
+title: "Regression Models Course Project"
+author: "Jessica Dyer"
+date: "1/23/2021"
+output:
+  bookdown::pdf_document2:
+    toc: false
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning = FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
+source("../regression models course project/analysis.R")
+```
+# Executive summary
+
+---
+
+# Introduction
+
+Motor Trend, a magazine about the automobile industry are interested in exploring the relationship between a set of variables and miles per gallon (MPG). They are particularly interested in the following two questions:  
+- Is an automatic or manual transmission better for MPG
+- Quantify the MPG difference between automatic and manual transmissions
+
+Research shows that there are a number of factors that affect fuel economy in vehicles including: [weight](https://www.fueleconomy.gov/feg/factors.shtml), [horsepower](https://www.nrcan.gc.ca/energy/efficiency/energy-efficiency-transportation-and-alternative-fuels/choosing-right-vehicle/tips-buying-fuel-efficient-vehicle/factors-affect-fuel-efficiency/horsepower/21028), [transimission type](https://www.consumerreports.org/cro/2012/01/save-gas-and-money-with-a-manual-transmission/index.htm#:~:text=In%20our%20tests%2C%20we've,also%20improve%20acceleration%2C%20sometimes%20significantly.) and [engine displacement](https://www.yourmechanic.com/article/what-is-engine-displacement#:~:text=Generally%20speaking%2C%20the%20higher%20an,power%20and%20maintain%20engine%20operation.). The goal of this analysis is to understand what variables have the largest impact on MPG. 
+
+# Methods
+
+We will be using the mtcars data set provided with the R statistical package. The data are from a 1974 edition of Motor Trend magazine and is comprised of fuel consumption and 10 aspects of automobile design and performance for 32 automobiles, all of them 1973-74 models.  
+
+- The 'mtcars' dataset has `r dim[1]` observations and `r dim[2]` variables.
+- The data dictionary can be found by typing the following into the console: **?mtcars**
+
+We used nested likelihood ratio tests (ANOVA) to help find the model that best explains variation in MPG in this data.  We conducted linear regression using the model derived from the step-wise model search. The final model did not include transmission type. However, because the client is interested in transmission type, we developed two models, one best fit and one best fit including transmission type. After finding the best fitting model with the available data, we then evaluated the relationship between weight and transmission type. We generated a box plot and compared mean weights of cars with a manual transmission versus automatic transmission using a t-test. 
+
+We then produced a series of four diagnostic plots: 1) residuals vs fitted, 2) scale-location, 3) normal Q-Q, and 4) residuals vs leverage and examined them to evaluate the fit and residuals of the linear model. 
+
+An additional diagnostic step included calculating the variance inflation factors (VIF) associated with our model to examine the increase in the variance for the ith regressor compared to the ideal setting where it is orthogonal to the other regressors. 
+
+Lastly, we ran the model, which included transmission type to evaluate the relationship between car weight, number of cylinders, and transmission type to MPG. 
+
+# Results
+
+The results of the likelihood ratio tests suggested that the model that captured the majority of the variability in the data is: `mpg ~ wt + as.factor(cyl)`. With this model, `r r`% of the variation in MPG is explained by both the weight of the vehicle and the number of cylinders. However, only `r dif2`% of the variation in MPG is explained by the number of cylinders, meaning the majority of the variation is explained by the weight of the vehicle. We also added transmission type into the model and found that only `r dif`% of the variation in MPG is explained by transmission type.
+
+In this dataset, cars with a manual transmission are heavier than cars with an automatic transmission. Manual transmission cars have a mean weight of `r mean_a` pounds and automatic transmission cars have a mean weight of `r mean_b` pounds, a statistically significant difference (p = `r pval`). See Figure \@ref(fig:cars-plot).
+
+The four diagnostic plots show...
+
+Linear regression results show that for every 1,000 pound increase in weight, miles per gallon decrease by 3.15 (p=0.002). Additionally, a car with six cylinders gets 4.26 MPG less (p=0.006) and a car with eight cylinders gets 6.08 MPG less (p=0.001) when compared to cars with four cylinders. There is no statistically significant difference in MPG between automatic and manual transmissions when weight and number of cylinders are held constant (p=0.9). See Figure \@ref(fig:plot).  
+
+```{r plot, fig.cap="Linear regression results.", echo=FALSE, out.width="65%", fig.align = 'center'}
+plot_summs(fit, fit2, scale = TRUE)
+```
+
+
+# Discussion
+We know that heavier cars get lower gas mileage. I think that the transmission variable is co-linear with weight and actually measuring the same thing as weight. Much of the difference seen when looking at MPG by transmission type is actually due to the weight of the vehicle. 
+
+# Conclusion
+
+
+\newpage
+
+# Appendix
+
+```{r corr, fig.cap="Correlation between various indicators and MPG", echo=FALSE, out.width="65%", fig.align = 'center'}
+data <- mtcars[ , c(1, 2, 3, 4, 5, 6, 9)]
+corr <- chart.Correlation(data, histogram=TRUE, pch=19)
+```
+
+---
+
+```{r cars-plot, fig.cap="Relationship between MPG and transmission type", echo=FALSE, out.width="75%", fig.align = 'center'}
+bp + p
+```
+
+
+\newpage
+
+```{r step, fig.cap="Step-wise output.", echo=FALSE, out.width="75%", fig.align = 'center'}
+# step-wise search using BIC
+step(fit0, k = log(nrow(mtcars)))
+```
+
+```{r resid, fig.cap="Residual plots for model diagnostics", echo=FALSE, out.width="75%", fig.align = 'center'}
+par(mfrow = c(2, 2)); plot(fit)
+```
+
+```{r influ, fig.cap="Potential influential points.", echo=FALSE, out.width="75%", fig.align = 'center'}
+summary(inflm.SR) 
+```
+
+\newpage
+
+```{r tab, fig.cap="Potential influential points.", echo=FALSE, out.width="75%", fig.align = 'center'}
+export_summs(fit, fit2,
+             error_format = "[{conf.low}, {conf.high}]")
+```
+
+
+
+
+
+
+

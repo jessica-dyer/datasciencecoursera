@@ -1,0 +1,205 @@
+---
+title: "Statistical Inference Course Project Part 2"
+author: "Jessica"
+date: "1/2/2021"
+output: pdf_document
+---
+
+## Setup 
+
+- Load Tooth Growth data and examine the data: 
+
+```{r setup, echo= TRUE, warning=FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(datasets)
+library(viridis)
+library(viridisLite)
+library(glue)
+library(dplyr)
+library(knitr)
+
+data("ToothGrowth")
+
+ToothGrowth$dose <- 
+factor(ToothGrowth$dose, 
+       levels=c(0.5, 1.0, 2.0),
+       labels=c("0.5", # Reference
+                "1.0", 
+                "2.0"))
+
+summary(ToothGrowth)
+
+```
+
+Three variables in this data set:  
+
+  1. 'len' numeric:	Tooth length  
+  2. 'supp' factor: Supplement type (VC or OJ)  
+  3. 'dose' numeric: Dose in milligrams/day  
+  
+## Exploratory 
+
+- Visualize tooth lengths by supplement and dose using box plots
+
+```{r, echo=TRUE}
+# Plot tooth length by dose amount and supplement delivery method
+
+ggplot(ToothGrowth, aes(x = dose, y = len, group = dose)) + 
+  geom_boxplot(aes(fill = dose), show.legend = FALSE) + facet_wrap(. ~supp) + 
+  xlab("Dose") + ylab("Tooth length") + 
+  ggtitle("Tooth Length by Dose Amount Grouped by Supplement Type") + 
+  theme_classic() + 
+  scale_fill_viridis(discrete = TRUE, option = "cividis")
+
+```
+
+- Visually, we can see that for both OJ and VC, the trend is higher tooth length when dose is increased. 
+- Doses 0.5 and 1.0 using the OJ have higher median tooth length than VC at the same doses. 
+- At the 2.0 dose level, there looks to be no difference between median tooth length of OJ and VC. 
+- Let's look at tooth length by supplement type grouped by dose amount more closely. 
+
+```{r, echo=TRUE}
+# Plot tooth length by dow amount and supplement delivery method
+
+ggplot(ToothGrowth, aes(x = supp, y = len, group = supp)) + 
+  geom_boxplot(aes(fill = supp), show.legend = FALSE) + facet_wrap(. ~dose) + 
+  xlab("Supplement Type") + ylab("Tooth length") + 
+  ggtitle("Tooth Length by Supplement Type Grouped by Dose") + 
+  theme_classic() + 
+  scale_fill_viridis(discrete = TRUE, option = "cividis")
+
+```
+
+
+## Analysis 
+
+- We will conduct t-tests to compare mean tooth lengths by supplement type and dose amount. We will conduct three comparisons: 
+  1. Compare tooth length by supplement type
+  2. Compare tooth length by dose amount
+  3. Compare tooth length by supplement type and dose amount
+  
+### Comparison One  
+
+- $H_{0}$: There is no difference in mean tooth growth length by supplement type
+- $H_{A}$: There is a difference in mean tooth growth length by supplement type
+
+```{r, echo=TRUE, warning=FALSE}
+supp_test <- t.test(len ~ supp, data = ToothGrowth)
+supp_test
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
+supp_ag <- aggregate(len ~  + supp,  data = ToothGrowth, mean)
+supp_ag$len <- round(supp_ag$len, 2)
+ci <- round(supp_test$conf.int[1:2], 2)
+ci <- glue(ci[1]," - ", ci[2])
+p <- round(supp_test$p.value, 2)
+colnames <- c("Test", "OJ: Mean Length", "VC: Mean Length", "95% CI", "P-value")
+
+supp_test_table <- data.frame("OJ vs. VC", supp_ag[1, 2], supp_ag[2, 2], ci, p)
+colnames(supp_test_table) <- colnames
+
+kable(supp_test_table, "simple")
+
+```
+
+### Comparison Two
+- $H_{0}$: There is no difference in mean tooth growth length between the 1.0 and the 2.0 milligrams/day doses
+- $H_{A}$: There is a difference in mean tooth growth length between the 1.0 and 2.0 milligrams/day doses
+
+```{r, echo=TRUE, warning=FALSE}
+dose_df <- filter(ToothGrowth, dose != "0.5")
+
+dose_test <- t.test(len ~ dose, data = dose_df)
+dose_test
+```
+
+```{r, echo=FALSE, warning=FALSE}
+mean_pointfive <- round(dose_test$estimate[1], 2)
+mean_two <- round(dose_test$estimate[2], 2)
+ci2 <- round(dose_test$conf.int[1:2], 2)
+ci2 <- glue(ci2[1]," - ", ci2[2])
+p2 <- round(dose_test$p.value, 3)
+colnames_two <- c("Test","Mean Length(1.0)", "Mean Length(2.0)", "95% CI", "P-value")
+
+dose_test_table <- data.frame("Dose 1.0 vs. 2.0",mean_pointfive, mean_two, ci2, p2)
+colnames(dose_test_table) <- colnames_two
+rownames(dose_test_table) <- c("1")
+
+kable(dose_test_table)
+
+```
+
+### Comparison Three 
+- $H_{0}$: There is no difference in mean tooth growth length between supplement type by dose level
+- $H_{A}$: There is a difference in mean tooth growth length between supplement type by dose level
+
+```{r, echo=FALSE, warning=FALSE}
+sml_dose <- filter(ToothGrowth, dose == "0.5")
+med_dose <- filter(ToothGrowth, dose == "1.0")
+lrg_dose <- filter(ToothGrowth, dose == "2.0")
+
+sml_test <- (t.test(len~supp, data = sml_dose))
+med_test <- (t.test(len~supp, data = med_dose))
+lrg_test <- (t.test(len~supp, data = lrg_dose))
+
+sml_mean1 <- round(sml_test$estimate[1], 2)
+sml_mean2 <- round(sml_test$estimate[2], 2)
+
+med_means1 <- round(med_test$estimate[1], 2)
+med_means2 <- round(med_test$estimate[2], 2)
+
+lrg_means1 <- round(lrg_test$estimate[1], 2)
+lrg_means2 <- round(lrg_test$estimate[1], 2)
+
+sml_ci <- round(sml_test$conf.int[1:2], 2)
+sml_ci <- glue(sml_ci[1], " - ", sml_ci[2])
+
+med_ci <- round(med_test$conf.int[1:2], 2)
+med_ci <- glue(med_ci[1], " - ", med_ci[2])
+
+lrg_ci <- round(lrg_test$conf.int[1:2], 2)
+lrg_ci <- glue(lrg_ci[1], " - ", lrg_ci[2])
+
+sml_p <- round(sml_test$p.value, 2)
+med_p <- round(med_test$p.value, 2)
+lrg_p <- round(lrg_test$p.value, 2)
+
+colnames_dosetst <- c("Test", "Mean length: OJ", "Mean length: VC", "95% CI", "P-value" )
+rownames_dosest <- c("1", "2", "3")
+
+dose_supp_table <- data.frame("OJ vs. VC @ 0.5", sml_mean1, sml_mean2, sml_ci, sml_p)
+dose_supp_table_m <- data.frame("OJ vs. VC @ 1.0", med_means1, med_means2, med_ci, med_p)
+dose_supp_table_lg <- data.frame("OJ vs. VC @ 2.0", lrg_means1, lrg_means2, lrg_ci, lrg_p)
+
+colnames(dose_supp_table) <- colnames_dosetst
+colnames(dose_supp_table_m) <- colnames_dosetst
+colnames(dose_supp_table_lg) <- colnames_dosetst
+
+dose_supp_table <- rbind(dose_supp_table, dose_supp_table_m, dose_supp_table_lg)
+rownames(dose_supp_table) <- rownames_dosest
+kable(dose_supp_table)
+
+```
+
+## Assumptions
+- Subjects were randomly assigned
+- Sampled population is representative of the larger population
+- Data are independent
+
+## Results 
+Based on our analysis, here are the results for each of the three comparisons conducted: 
+
+1. **No difference in tooth length by supplement:** Overall, there is not a statistically significant difference in mean tooth growth length when comparing by supplement type. The mean tooth length when using the supplement 'OJ' was `r supp_ag[1,2]` and for 'VC' was `r supp_ag[2,2]`. The 95% confidence interval was `r ci` with a p-value of `r p`. The 95% confidence interval contains '0' and the p-value is less than the 0.05 significance threshold. Therefore, we fail to reject the null hypothesis that there is no difference in overall mean tooth length by supplement type. 
+
+2. **Difference in tooth length by dose:** When comparing the 1.0 milligram/day dose with the 2.0 milligram/day dose, there is a statistically significant difference in mean tooth growth length. The mean tooth length with the supplement at 1.0 milligrams/day was `r mean_pointfive` and the mean tooth length with the supplement at 2.0 milligrams/day was `r mean_two`(95% CI[`r ci2`], p<0.001). Based on this information, we show that use of a supplement at 2.0 milligrams/day produces longer tooth lengths compared with use of a supplement at 1.0 milligrams/day. 
+
+3. **Difference in tooth length by supplement when stratified by dose:** When the data were stratified by dose and the supplement types were compared at each level(0.5, 1.0, 2.0), we found significant differences between 'OJ' and 'VC' at the 0.5 and 1.0 dose levels and no differences at the 2.0 dose level. At the 0.5 milligram/day dose, the mean tooth length for 'OJ' was `r sml_mean1` and for 'VC' `r sml_mean2` (95% CI[`r sml_ci`], p=`r sml_p`). At the 1.0 milligram/day dose, the mean tooth length for 'OJ' was `r med_means1` and for 'VC' `r med_means2` (95% CI[`r med_ci`], p<0.001). No significant differences were found between 'OJ' and 'VC' at the 2.0 milligram/day dose. 
+
+## Discussion
+- To achieve optimum tooth growth results, the preferred dose level is 2.0 milligrams/day with no difference between supplement types 'OJ' and 'VC'. 
+- If a dose of 0.5-1.0 milligrams/day is the only available dose, 'OJ' promotes higher tooth growth at these dose levels. 
+
+
