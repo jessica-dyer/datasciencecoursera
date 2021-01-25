@@ -27,10 +27,10 @@ fit <- lm(formula = mpg ~ wt + as.factor(cyl) + as.factor(am), data = mtcars)
 fit2 <- lm(formula = mpg ~ wt + as.factor(cyl), data = mtcars)
 fit3 <- lm(formula = mpg ~ wt + as.factor(am), data = mtcars)
 
-r <- (round((summary(fit)$adj.r.squared), 2)*100)
+r <- (round((summary(fit2)$adj.r.squared), 2)*100)
 
 
-dif <- abs(round((summary(fit)$adj.r.squared-summary(fit2)$adj.r.squared)*100, 2))
+dif <- abs(round((summary(fit2)$adj.r.squared-summary(fit)$adj.r.squared)*100, 2))
 dif2 <- abs(round((summary(fit)$adj.r.squared-summary(fit3)$adj.r.squared)*100, 2))
 
 ### Residual plots
@@ -69,9 +69,9 @@ p <- p + labs(color = "Transmission type")
 ## Influential points
 
 # calculate the dfbetas for the slope
-round(dfbetas(fit)[, 2], 3)
+round(dfbetas(fit2)[, 2], 3)
 
-inflm.SR <- influence.measures(fit)
+inflm.SR <- influence.measures(fit2)
 which(apply(inflm.SR$is.inf, 1, any))
 # which observations 'are' influential
 summary(inflm.SR) # only these
@@ -83,19 +83,25 @@ summary(inflm.SR) # only these
 
 library(rms)
 # calculate the variance inflation factors
-vif(fit)
+vif(fit2)
 
 # calculate the standard error inflation factors
-sqrt(vif(fit))
+sqrt(vif(fit2))
 
 library(jtools)
 library(ggstance)
 library(huxtable)
+
 export_summs(fit, fit2,
              error_format = "[{conf.low}, {conf.high}]")
 
+names_a <- c("Intercept", "Weight", "Six cylinders", "Eight cylinders")
+names(fit2$coefficients) <- names_a
 
 
+names_b <- c("Intercept", "Weight", "Six cylinders", "Eight cylinders", "Manual transmission")
+names(fit$coefficients) <- names_b
 
-plot_summs(fit, fit2, scale = TRUE)
+coef_names <- names_b[2:5]
+plot_summs(fit, fit2, robust = "HC3", coefs = coef_names )
 
