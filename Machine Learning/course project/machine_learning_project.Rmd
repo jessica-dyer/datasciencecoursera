@@ -5,3 +5,84 @@ date: "2/6/2021"
 output: html_document
 ---
 
+```{r setup, echo=TRUE, warning=FALSE, message=FALSE}
+packages <- c("dplyr", "ggplot2", "tidyverse", "caret", 
+              "Hmisc", "tibble", "kableExtra", "here", "gtsummary", 
+              "lubridate", "stringr", "readr", "utils")
+
+new.packages <- packages[!(packages %in% installed.packages()[,"Package"])]
+
+if(length(new.packages)) install.packages(new.packages)
+
+# Load packages
+invisible(lapply(packages, library, character.only = TRUE))
+
+train_url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+  
+test_url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+
+data <- read.csv(train_url)
+# test <- read.csv(test_url)
+```
+
+## Executive summary
+
+https://rpubs.com/jsardinha/PML_JHU_PeerAssessment_01
+
+## Introduction 
+
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, our goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset). 
+
+## Methods
+
+1. load data
+2. set seed and split data
+3. Google which accelerometer data best predicts quality of movement? 
+
+
+```{r}
+# SPLIT THE DATA INTO TRAINING AND TESTING USING `createDataPartition`
+
+set.seed(43929)
+in_train <- createDataPartition(y = train$classe, 
+                                p = .70, 
+                                list = FALSE)
+
+train <- data[in_train, ]
+
+dim(train)
+
+#test <- data[-in_train, ]
+
+```
+
+### Removing coviariates 
+
+Some variables have no variability. This dataset has 160 variables, so in order to quickly remove some of these variables, we looked at which variables is a near zero variance predictor. We will remove these variables from our training dataset.  
+```{r}
+
+nzv <- nearZeroVar(train, saveMetrics = TRUE)
+
+nzv_vars <- 
+  nzv %>% filter(nzv == "TRUE")
+  
+remove_vars <- row.names(nzv_vars)
+```
+
+We removed `r length(nzv_vars)` variables as possible predictors with this method. 
+- note: do we want them to be removed completely? Or just not included as a potential predictor? 
+
+```{r}
+
+train <- train[, !names(train) %in% remove_vars]
+
+```
+
+Next I want to look at which variables have the most correlation with the outcome `classe`
+## Results 
+
+## Conclusion 
+
+
+
+
